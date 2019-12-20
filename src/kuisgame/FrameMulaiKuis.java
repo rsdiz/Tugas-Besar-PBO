@@ -128,6 +128,21 @@ public class FrameMulaiKuis extends javax.swing.JFrame {
     private void closePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closePanelMouseClicked
         this.dispose();
     }//GEN-LAST:event_closePanelMouseClicked
+    
+        private void jProgressBar1AncestorAdded(javax.swing.event.AncestorEvent evt) {                                            
+        Timer timer;
+        jProgressBar1.setValue(100);
+        ActionListener listener = new ActionListener() {
+            int counter = 100;
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                counter -= 5;
+                jProgressBar1.setValue(counter);
+            }
+        };
+        timer = new Timer(500, listener);
+        timer.start();
+    }    
 
     /**
      * @param args the command line arguments
