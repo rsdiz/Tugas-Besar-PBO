@@ -5,6 +5,11 @@
  */
 package kuisgame;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
  * @author Rosyid Iz
@@ -16,6 +21,25 @@ public class FrameSelesai extends javax.swing.JFrame {
      */
     public FrameSelesai() {
         initComponents();
+        getScore();
+    }
+    
+    private void getScore() {
+        try {
+            // Membuat Koneksi
+            Connection conn = ConnectDB.getKoneksi();
+            Statement s = conn.createStatement();
+            // Membuat Query SELECT
+            String sql = "SELECT score FROM user ORDER BY id DESC LIMIT 1";
+            
+            ResultSet r = s.executeQuery(sql);
+            while(r.next()){
+                labelScore.setText(r.getString("score"));
+            }
+
+        } catch(SQLException e) {
+            System.out.println("Terjadi Error! Gagal mengambil score");
+        }
     }
 
     /**
@@ -33,6 +57,11 @@ public class FrameSelesai extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        buttonHomePage = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        buttonRankList = new javax.swing.JLabel();
+        labelScore = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 500));
@@ -70,7 +99,51 @@ public class FrameSelesai extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 103, 125));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("TOTAL SCORE");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 180, -1, -1));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, -1, -1));
+
+        jPanel3.setBackground(new java.awt.Color(90, 73, 102));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240), 2));
+        jPanel3.setPreferredSize(new java.awt.Dimension(350, 80));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        buttonHomePage.setFont(new java.awt.Font("THE CHAMP", 0, 22)); // NOI18N
+        buttonHomePage.setForeground(new java.awt.Color(240, 240, 240));
+        buttonHomePage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        buttonHomePage.setText("< HOME PAGE");
+        buttonHomePage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonHomePageMouseClicked(evt);
+            }
+        });
+        jPanel3.add(buttonHomePage, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, 3, 340, 70));
+
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 350, 80));
+
+        jPanel4.setBackground(new java.awt.Color(90, 73, 102));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240), 2));
+        jPanel4.setPreferredSize(new java.awt.Dimension(350, 80));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        buttonRankList.setFont(new java.awt.Font("THE CHAMP", 0, 22)); // NOI18N
+        buttonRankList.setForeground(new java.awt.Color(240, 240, 240));
+        buttonRankList.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        buttonRankList.setText("RANK LIST >");
+        buttonRankList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonRankListMouseClicked(evt);
+            }
+        });
+        jPanel4.add(buttonRankList, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 350, 80));
+
+        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 320, -1, -1));
+
+        labelScore.setFont(new java.awt.Font("THE CHAMP", 0, 36)); // NOI18N
+        labelScore.setForeground(new java.awt.Color(255, 103, 125));
+        labelScore.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelScore.setText("0000");
+        labelScore.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 103, 125), 2));
+        labelScore.setOpaque(true);
+        jPanel2.add(labelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 200, 130, 70));
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 700, 400));
 
@@ -83,6 +156,17 @@ public class FrameSelesai extends javax.swing.JFrame {
     private void closePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closePanelMouseClicked
         this.dispose();
     }//GEN-LAST:event_closePanelMouseClicked
+
+    private void buttonHomePageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonHomePageMouseClicked
+        this.setVisible(false);
+        FrameWelcome welcome = new FrameWelcome();
+        this.dispose();
+        welcome.setVisible(true);
+    }//GEN-LAST:event_buttonHomePageMouseClicked
+
+    private void buttonRankListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonRankListMouseClicked
+        this.dispose();
+    }//GEN-LAST:event_buttonRankListMouseClicked
 
     /**
      * @param args the command line arguments
@@ -121,10 +205,15 @@ public class FrameSelesai extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel X;
+    private javax.swing.JLabel buttonHomePage;
+    private javax.swing.JLabel buttonRankList;
     private javax.swing.JPanel closePanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel labelScore;
     // End of variables declaration//GEN-END:variables
 }

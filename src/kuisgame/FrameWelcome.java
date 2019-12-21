@@ -6,8 +6,13 @@
 package kuisgame;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -16,6 +21,8 @@ import javax.swing.table.DefaultTableModel;
 public class FrameWelcome extends javax.swing.JFrame {
     
     DefaultTableModel scoreModel;
+    public String player;
+    Object nama;
     
 
     /**
@@ -26,6 +33,29 @@ public class FrameWelcome extends javax.swing.JFrame {
         scoreModel = (DefaultTableModel) tableScore.getModel();
         tableScore.setModel(scoreModel);
         LoadData();
+        TableColumnModel tbl = tableScore.getColumnModel();
+        tbl.getColumn(0).setPreferredWidth(30);
+        tbl.getColumn(1).setPreferredWidth(200);
+        tbl.getColumn(2).setPreferredWidth(70);
+
+    }
+    
+    void setNama(String nama) {
+        try {
+            // Membuat Koneksi
+            Connection conn = ConnectDB.getKoneksi();
+            Statement s = conn.createStatement();
+            // Membuat Query SELECT
+            String sql = "INSERT INTO user VALUES (null,?,0)";
+//            s.executeQuery(sql);
+            PreparedStatement p = conn.prepareStatement(sql);
+            p.setString(1, nama);
+            p.executeUpdate();
+            p.close();
+            
+        } catch(SQLException e) {
+            System.out.println("Terjadi Error! Nama tidak tersimpan");
+        }
     }
 
     /**
@@ -46,6 +76,7 @@ public class FrameWelcome extends javax.swing.JFrame {
         X = new javax.swing.JLabel();
         labelTopScore = new javax.swing.JLabel();
         panelScore = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableScore = new javax.swing.JTable();
 
@@ -79,15 +110,6 @@ public class FrameWelcome extends javax.swing.JFrame {
         inputNama.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 103, 125)));
         inputNama.setCaretColor(new java.awt.Color(255, 174, 143));
         inputNama.setFocusCycleRoot(true);
-        inputNama.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                inputNamaAncestorAdded(evt);
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         panelLeftWelcome.add(inputNama, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 310, 240, 50));
 
         buttonMulai.setBackground(new java.awt.Color(255, 103, 125));
@@ -132,6 +154,7 @@ public class FrameWelcome extends javax.swing.JFrame {
         panelScore.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         panelScore.setOpaque(false);
         panelScore.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        panelScore.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 30));
 
         jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setBorder(null);
@@ -140,7 +163,7 @@ public class FrameWelcome extends javax.swing.JFrame {
         jScrollPane1.setFont(new java.awt.Font("THE CHAMP", 0, 12)); // NOI18N
 
         tableScore.setBackground(new java.awt.Color(51, 51, 51));
-        tableScore.setFont(new java.awt.Font("THE CHAMP", 0, 12)); // NOI18N
+        tableScore.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         tableScore.setForeground(new java.awt.Color(255, 103, 125));
         tableScore.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -168,12 +191,14 @@ public class FrameWelcome extends javax.swing.JFrame {
         tableScore.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         tableScore.setAutoscrolls(false);
         tableScore.setGridColor(new java.awt.Color(255, 103, 125));
-        tableScore.setIntercellSpacing(new java.awt.Dimension(2, 2));
-        tableScore.getTableHeader().setResizingAllowed(false);
+        tableScore.setRowHeight(35);
+        tableScore.setRowMargin(0);
+        tableScore.setRowSelectionAllowed(false);
         tableScore.getTableHeader().setReorderingAllowed(false);
+        tableScore.setUpdateSelectionOnSort(false);
         jScrollPane1.setViewportView(tableScore);
 
-        panelScore.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 390));
+        panelScore.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 300, 360));
 
         panelRightWelcome.add(panelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 300, 390));
 
@@ -188,14 +213,16 @@ public class FrameWelcome extends javax.swing.JFrame {
     }//GEN-LAST:event_closePanelMouseClicked
 
     private void buttonMulaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMulaiActionPerformed
-        this.setVisible(false);
-        new FrameMulaiKuis().setVisible(true);
-        this.dispose();
+        if (!inputNama.getText().equals("")) {
+            String nama = inputNama.getText();
+            setNama(nama);
+            this.setVisible(false);
+            new FrameMulaiKuis().setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Masukkan Nama!", "Error! Nama Kosong!", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_buttonMulaiActionPerformed
-
-    private void inputNamaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_inputNamaAncestorAdded
-        inputNama.setBounds(50,100,100,50);
-    }//GEN-LAST:event_inputNamaAncestorAdded
 
     /**
      * @param args the command line arguments
@@ -237,6 +264,7 @@ public class FrameWelcome extends javax.swing.JFrame {
     private javax.swing.JButton buttonMulai;
     private javax.swing.JPanel closePanel;
     private javax.swing.JTextField inputNama;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelTitleApp;
     private javax.swing.JLabel labelTopScore;
@@ -247,12 +275,22 @@ public class FrameWelcome extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void LoadData() {
-//        try {
-//            Connection con = ConnectDB.getKoneksi();
-//            Statement s = con.createStatement();
-//            String query = "SELECT * FROM score";
-//        } catch (SQLException e) {
-//            System.out.println("Error: LoadData()");
-//        }
+        try {
+            Connection con = ConnectDB.getKoneksi();
+            Statement s = con.createStatement();
+            String query = "SELECT * FROM user ORDER BY score DESC LIMIT 10";
+            ResultSet r = s.executeQuery(query);
+            int i = 1;
+            while(r.next()){
+                Object [] obj = new Object[3];
+                obj[0] = i;
+                obj[1] = r.getString("nama");
+                obj[2] = r.getInt("score");
+                i++;
+                scoreModel.addRow(obj);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: LoadData()");
+        }
     }
 }
