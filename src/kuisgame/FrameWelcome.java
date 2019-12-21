@@ -1,16 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kuisgame;
 
+import java.awt.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -21,26 +19,27 @@ import javax.swing.table.TableColumnModel;
 public class FrameWelcome extends javax.swing.JFrame {
     
     DefaultTableModel scoreModel;
-    public String player;
-    Object nama;
-    
 
     /**
      * Creates new form FrameWelcome
      */
     public FrameWelcome() {
         initComponents();
+        enableDrag(this);
         scoreModel = (DefaultTableModel) tableScore.getModel();
         tableScore.setModel(scoreModel);
         LoadData();
         TableColumnModel tbl = tableScore.getColumnModel();
         tbl.getColumn(0).setPreferredWidth(30);
-        tbl.getColumn(1).setPreferredWidth(200);
-        tbl.getColumn(2).setPreferredWidth(70);
-
+        tbl.getColumn(1).setPreferredWidth(220);
+        tbl.getColumn(2).setPreferredWidth(50);
+        DefaultTableCellRenderer rightR = new DefaultTableCellRenderer();
+        rightR.setHorizontalAlignment(JLabel.CENTER);
+        tableScore.getColumnModel().getColumn(0).setCellRenderer(rightR);
+        tableScore.getColumnModel().getColumn(2).setCellRenderer(rightR);
     }
     
-    void setNama(String nama) {
+    private void setNama(String nama) {
         try {
             // Membuat Koneksi
             Connection conn = ConnectDB.getKoneksi();
@@ -54,7 +53,7 @@ public class FrameWelcome extends javax.swing.JFrame {
             p.close();
             
         } catch(SQLException e) {
-            System.out.println("Terjadi Error! Nama tidak tersimpan");
+            System.out.println("Error: Nama tidak tersimpan!");
         }
     }
 
@@ -67,22 +66,26 @@ public class FrameWelcome extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        panelBase = new javax.swing.JPanel();
         panelLeftWelcome = new javax.swing.JPanel();
         labelTitleApp = new javax.swing.JLabel();
         inputNama = new javax.swing.JTextField();
         buttonMulai = new javax.swing.JButton();
         panelRightWelcome = new javax.swing.JPanel();
-        closePanel = new javax.swing.JPanel();
-        X = new javax.swing.JLabel();
         labelTopScore = new javax.swing.JLabel();
         panelScore = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableScore = new javax.swing.JTable();
+        panelCustomBar = new javax.swing.JPanel();
+        buttonMinimized = new javax.swing.JLabel();
+        buttonClose = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kuis Game");
+        setBackground(new java.awt.Color(25, 9, 52));
         setFocusCycleRoot(false);
+        setForeground(new java.awt.Color(240, 240, 240));
         setLocationByPlatform(true);
         setMaximumSize(new java.awt.Dimension(800, 500));
         setMinimumSize(new java.awt.Dimension(800, 500));
@@ -90,6 +93,14 @@ public class FrameWelcome extends javax.swing.JFrame {
         setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        panelBase.setBackground(new java.awt.Color(255, 255, 255));
+        panelBase.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelBaseMouseClicked(evt);
+            }
+        });
+        panelBase.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panelLeftWelcome.setBackground(new java.awt.Color(111, 90, 126));
         panelLeftWelcome.setFocusable(false);
@@ -125,25 +136,10 @@ public class FrameWelcome extends javax.swing.JFrame {
         });
         panelLeftWelcome.add(buttonMulai, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 380, 240, 50));
 
-        getContentPane().add(panelLeftWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 460, 500));
+        panelBase.add(panelLeftWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 460, 500));
 
         panelRightWelcome.setBackground(new java.awt.Color(252, 246, 246));
         panelRightWelcome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        closePanel.setBackground(new java.awt.Color(205, 102, 132));
-        closePanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                closePanelMouseClicked(evt);
-            }
-        });
-
-        X.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
-        X.setForeground(new java.awt.Color(255, 255, 255));
-        X.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        X.setText("X");
-        closePanel.add(X);
-
-        panelRightWelcome.add(closePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 30, 30));
 
         labelTopScore.setFont(new java.awt.Font("THE CHAMP", 0, 34)); // NOI18N
         labelTopScore.setForeground(new java.awt.Color(255, 103, 125));
@@ -154,7 +150,7 @@ public class FrameWelcome extends javax.swing.JFrame {
         panelScore.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         panelScore.setOpaque(false);
         panelScore.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        panelScore.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 30));
+        panelScore.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 60));
 
         jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setBorder(null);
@@ -188,11 +184,11 @@ public class FrameWelcome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableScore.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
+        tableScore.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tableScore.setAutoscrolls(false);
         tableScore.setGridColor(new java.awt.Color(255, 103, 125));
-        tableScore.setRowHeight(35);
-        tableScore.setRowMargin(0);
+        tableScore.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        tableScore.setRowHeight(30);
         tableScore.setRowSelectionAllowed(false);
         tableScore.getTableHeader().setReorderingAllowed(false);
         tableScore.setUpdateSelectionOnSort(false);
@@ -202,15 +198,40 @@ public class FrameWelcome extends javax.swing.JFrame {
 
         panelRightWelcome.add(panelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 300, 390));
 
-        getContentPane().add(panelRightWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 0, 340, 500));
+        panelBase.add(panelRightWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 10, 340, 500));
+
+        getContentPane().add(panelBase, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 820, 520));
+
+        panelCustomBar.setBackground(new java.awt.Color(51, 51, 51));
+        panelCustomBar.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        buttonMinimized.setFont(new java.awt.Font("THE CHAMP", 0, 30)); // NOI18N
+        buttonMinimized.setForeground(new java.awt.Color(255, 255, 255));
+        buttonMinimized.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        buttonMinimized.setText("_");
+        buttonMinimized.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonMinimizedMouseClicked(evt);
+            }
+        });
+        panelCustomBar.add(buttonMinimized, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 0, 40, 40));
+
+        buttonClose.setFont(new java.awt.Font("THE CHAMP", 0, 30)); // NOI18N
+        buttonClose.setForeground(new java.awt.Color(255, 255, 255));
+        buttonClose.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        buttonClose.setText("X");
+        buttonClose.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonCloseMouseClicked(evt);
+            }
+        });
+        panelCustomBar.add(buttonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 0, 40, 40));
+
+        getContentPane().add(panelCustomBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 820, 40));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void closePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closePanelMouseClicked
-        this.dispose();
-    }//GEN-LAST:event_closePanelMouseClicked
 
     private void buttonMulaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMulaiActionPerformed
         if (!inputNama.getText().equals("")) {
@@ -223,6 +244,18 @@ public class FrameWelcome extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Masukkan Nama!", "Error! Nama Kosong!", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_buttonMulaiActionPerformed
+
+    private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
+        this.dispose();
+    }//GEN-LAST:event_buttonCloseMouseClicked
+
+    private void buttonMinimizedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonMinimizedMouseClicked
+        this.setState(FrameWelcome.ICONIFIED);
+    }//GEN-LAST:event_buttonMinimizedMouseClicked
+
+    private void panelBaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBaseMouseClicked
+        
+    }//GEN-LAST:event_panelBaseMouseClicked
 
     /**
      * @param args the command line arguments
@@ -260,14 +293,16 @@ public class FrameWelcome extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel X;
+    private javax.swing.JLabel buttonClose;
+    private javax.swing.JLabel buttonMinimized;
     private javax.swing.JButton buttonMulai;
-    private javax.swing.JPanel closePanel;
     private javax.swing.JTextField inputNama;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelTitleApp;
     private javax.swing.JLabel labelTopScore;
+    private javax.swing.JPanel panelBase;
+    private javax.swing.JPanel panelCustomBar;
     private javax.swing.JPanel panelLeftWelcome;
     private javax.swing.JPanel panelRightWelcome;
     private javax.swing.JPanel panelScore;
@@ -290,7 +325,13 @@ public class FrameWelcome extends javax.swing.JFrame {
                 scoreModel.addRow(obj);
             }
         } catch (SQLException e) {
-            System.out.println("Error: LoadData()");
+            System.out.println("Error: Tidak Bisa Mengambil Data Score!");
         }
+    }
+    
+    private void enableDrag(Component c) {
+        DragListener customBar = new DragListener();
+        c.addMouseListener(customBar);
+        c.addMouseMotionListener(customBar);
     }
 }

@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kuisgame;
 
+import java.awt.Component;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +17,7 @@ public class FrameSelesai extends javax.swing.JFrame {
      */
     public FrameSelesai() {
         initComponents();
+        enableDrag(this);
         getScore();
     }
     
@@ -54,7 +51,7 @@ public class FrameSelesai extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         closePanel = new javax.swing.JPanel();
         X = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        panelBase = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -87,19 +84,24 @@ public class FrameSelesai extends javax.swing.JFrame {
 
         jPanel1.add(closePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 10, 30, 30));
 
-        jPanel2.setBackground(new java.awt.Color(111, 90, 126));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        panelBase.setBackground(new java.awt.Color(111, 90, 126));
+        panelBase.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelBaseMouseClicked(evt);
+            }
+        });
+        panelBase.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("THE CHAMP", 0, 40)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 174, 143));
         jLabel1.setText("<html>\n<center>\nSELAMAT!<br>\nANDA TELAH MENYELESAIKAN KUIS!\n</center>\n</html>");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+        panelBase.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 103, 125));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("TOTAL SCORE");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, -1, -1));
+        panelBase.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, -1, -1));
 
         jPanel3.setBackground(new java.awt.Color(90, 73, 102));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240), 2));
@@ -117,7 +119,7 @@ public class FrameSelesai extends javax.swing.JFrame {
         });
         jPanel3.add(buttonHomePage, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, 3, 340, 70));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 350, 80));
+        panelBase.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 350, 80));
 
         jPanel4.setBackground(new java.awt.Color(90, 73, 102));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240), 2));
@@ -135,7 +137,7 @@ public class FrameSelesai extends javax.swing.JFrame {
         });
         jPanel4.add(buttonRankList, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 350, 80));
 
-        jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 320, -1, -1));
+        panelBase.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 320, -1, -1));
 
         labelScore.setFont(new java.awt.Font("THE CHAMP", 0, 36)); // NOI18N
         labelScore.setForeground(new java.awt.Color(255, 103, 125));
@@ -143,9 +145,9 @@ public class FrameSelesai extends javax.swing.JFrame {
         labelScore.setText("0000");
         labelScore.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 103, 125), 2));
         labelScore.setOpaque(true);
-        jPanel2.add(labelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 200, 130, 70));
+        panelBase.add(labelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 200, 130, 70));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 700, 400));
+        jPanel1.add(panelBase, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 700, 400));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 500));
 
@@ -167,6 +169,10 @@ public class FrameSelesai extends javax.swing.JFrame {
     private void buttonRankListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonRankListMouseClicked
         this.dispose();
     }//GEN-LAST:event_buttonRankListMouseClicked
+
+    private void panelBaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBaseMouseClicked
+
+    }//GEN-LAST:event_panelBaseMouseClicked
 
     /**
      * @param args the command line arguments
@@ -211,9 +217,16 @@ public class FrameSelesai extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel labelScore;
+    private javax.swing.JPanel panelBase;
     // End of variables declaration//GEN-END:variables
+
+    private void enableDrag(Component c) {
+        DragListener customBar = new DragListener();
+        c.addMouseListener(customBar);
+        c.addMouseMotionListener(customBar);
+    }
+    
 }
