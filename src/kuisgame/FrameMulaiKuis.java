@@ -66,7 +66,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     
     private void toEnd(){
         if( this.urutan > getBatas() ) {
-            this.score *= counter/3;
+            this.score += counter;
             setScore(score);
             this.setVisible(false);
             FrameSelesai end = new FrameSelesai();

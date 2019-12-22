@@ -40,13 +40,15 @@ public class PlayMusic {
         try {
             BGM = new AudioStream(new FileInputStream("src/bgm.wav"));
             AudioPlayer.player.start(BGM);
+//            if(!AudioPlayer.player.isAlive()){
+                AudioPlayer.player.start(BGM);
+//            }
 //            MD = BGM.getData();
 //            loop = new ContinuousAudioDataStream(MD);
         } catch (IOException ex) {
             System.out.println("Error: " + ex);
         }
     }
-    
     public static void stopMusic(){
         AudioPlayer.player.stop(BGM);
     }
@@ -54,7 +56,6 @@ public class PlayMusic {
     public static void playMusic() {
         AudioPlayer.player.start(BGM);
     }
-    
 }
 
 class AL implements ActionListener {

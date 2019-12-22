@@ -112,6 +112,7 @@ public class FrameWelcome extends javax.swing.JFrame {
 
         panelLeftWelcome.setBackground(new java.awt.Color(111, 90, 126));
         panelLeftWelcome.setFocusable(false);
+        panelLeftWelcome.setMaximumSize(new java.awt.Dimension(460, 430));
         panelLeftWelcome.setRequestFocusEnabled(false);
         panelLeftWelcome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
