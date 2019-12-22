@@ -1,28 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kuisgame;
+
 
 /**
  *
  * @author Rosyid Iz
  */
-public class KuisGame {
 
+public class KuisGame {
+    
+    
     /**
      * @param args the command line arguments
+     * @throws java.lang.Exception
      */
-    public static void main(String[] args) {
-        // PALET COLORS
-        // #E9DFFB
-        // #905BEC
-        // #5A18C9
-        // #300D6E
-        // #190934
+    public static void main(String[] args) throws Exception {
+        
         FrameWelcome welcome = new FrameWelcome();
+        PlayMusic play = new PlayMusic();
+        
         welcome.setVisible(true);
+        play.testEnter();
+        
     }
     
 }

@@ -15,26 +15,30 @@ import javax.swing.Timer;
  * @author Rosyid Iz
  */
 public final class FrameMulaiKuis extends javax.swing.JFrame {
+    
+    Connection conn;
+    Statement s;
     String soal, player;
     String A, B, C, D;
     private int urutan = 1;
     String jawaban;
     int score = 0;
+    
+    private int counter = 60;
     /**
      * Creates new form FrameMulaiKuis
      */
     public FrameMulaiKuis() {
         initComponents();
-        enableDrag(this);
-        getNamePlayer();
-        tampilSoal();
+        conn = ConnectDB.getKoneksi(); // koneksi ke database
+        new EnableDrag(this); // fitur drag pada titlebar
+        getNamePlayer(); // membaca nama user dari database
+        tampilSoal(); // menampilkan soal
     }
 
     void getNamePlayer() {
         try {
-            // Membuat Koneksi
-            Connection conn = ConnectDB.getKoneksi();
-            Statement s = conn.createStatement();
+            s = conn.createStatement();
             // Membuat Query SELECT
             String sql = "SELECT nama FROM user ORDER BY id DESC LIMIT 1";
             ResultSet r = s.executeQuery(sql);
@@ -48,9 +52,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     
     void setScore(int score) {
         try {
-            // Membuat Koneksi
-            Connection conn = ConnectDB.getKoneksi();
-            Statement s = conn.createStatement();
+            s = conn.createStatement();
             // Membuat Query SELECT
             String sql = "UPDATE user SET score = ? ORDER BY id DESC LIMIT 1";
             PreparedStatement p = conn.prepareStatement(sql);
@@ -64,6 +66,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     
     private void toEnd(){
         if( this.urutan > getBatas() ) {
+            this.score *= counter/3;
             setScore(score);
             this.setVisible(false);
             FrameSelesai end = new FrameSelesai();
@@ -75,9 +78,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     private int getBatas(){
         int jmlSoal = 0;
         try {
-            // Membuat Koneksi
-            Connection conn = ConnectDB.getKoneksi();
-            Statement s = conn.createStatement();
+            s = conn.createStatement();
             // Membuat Query SELECT
             String sql = "SELECT COUNT(*) AS jumlah FROM soal";
             ResultSet r = s.executeQuery(sql);
@@ -93,9 +94,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     boolean getJawaban(String jawabanUser){
         String benar = "";
         try {
-            // Membuat Koneksi
-            Connection conn = ConnectDB.getKoneksi();
-            Statement s = conn.createStatement();
+            s = conn.createStatement();
             // Membuat Query SELECT
             String sql = "SELECT * FROM soal WHERE soal.id_soal = " + urutan ;
             ResultSet r = s.executeQuery(sql);
@@ -110,14 +109,12 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     
     void tampilSoal(){
         try {
-            // Membuat Koneksi
-            Connection conn = ConnectDB.getKoneksi();
-            Statement s = conn.createStatement();
+            s = conn.createStatement();
             // Membuat Query SELECT
-            String sql = "SELECT * FROM soal INNER JOIN jawaban ON soal.id_soal = jawaban.id_soal WHERE soal.id_soal = " + urutan ;
-            
+            String sql = "SELECT * FROM soal "
+                        +" INNER JOIN jawaban ON soal.id_soal = jawaban.id_soal"
+                        +" WHERE soal.id_soal = " + urutan ;
             ResultSet r = s.executeQuery(sql);
-            
             while(r.next()){
                 soal = r.getString("soal");
                 A = r.getString("jawaban_a");
@@ -126,7 +123,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
                 D = r.getString("jawaban_d");
             }
             // Membuat data di dalam database baris per baris
-            jLabel3.setText(soal);
+            labelSoal.setText(soal);
             buttonA.setText(A);
             buttonB.setText(B);
             buttonC.setText(C);
@@ -150,13 +147,13 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
 
         panelBase = new javax.swing.JPanel();
         panelInfo = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         labelPlayer = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         panelSoal = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        labelSoal = new javax.swing.JLabel();
         buttonC = new javax.swing.JButton();
         buttonA = new javax.swing.JButton();
         buttonB = new javax.swing.JButton();
@@ -165,6 +162,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
         panelCustomBar = new javax.swing.JPanel();
         buttonMinimized = new javax.swing.JLabel();
         buttonClose = new javax.swing.JLabel();
+        jToggleButton1 = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
@@ -185,16 +183,16 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
         panelInfo.setBackground(new java.awt.Color(111, 90, 126));
         panelInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("00:00");
-        panelInfo.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 80, -1));
-
         labelPlayer.setFont(new java.awt.Font("THE CHAMP", 0, 18)); // NOI18N
         labelPlayer.setForeground(new java.awt.Color(255, 255, 255));
         labelPlayer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelPlayer.setText("nama");
-        panelInfo.add(labelPlayer, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 120, 40));
+        panelInfo.add(labelPlayer, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 120, 40));
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/user-3-small.png"))); // NOI18N
+        jLabel4.setAlignmentY(0.0F);
+        panelInfo.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         panelBase.add(panelInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 140, 500));
 
@@ -204,22 +202,23 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("THE CHAMP", 0, 22)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(205, 102, 132));
-        jLabel1.setText("KUIS");
-        panelSoal.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 90, 40));
+        jLabel1.setText("GAME KUIS");
+        panelSoal.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 120, 40));
 
         jPanel3.setBackground(new java.awt.Color(205, 102, 132));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(25, 25, 25, 25));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel3.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 560, 180));
+        labelSoal.setFont(new java.awt.Font("Montserrat SemiBold", 0, 16)); // NOI18N
+        labelSoal.setForeground(new java.awt.Color(255, 255, 255));
+        labelSoal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel3.add(labelSoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 560, 180));
 
         panelSoal.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 620, 240));
 
         buttonC.setBackground(new java.awt.Color(205, 102, 132));
         buttonC.setFont(new java.awt.Font("Source Sans Pro", 0, 14)); // NOI18N
-        buttonC.setForeground(new java.awt.Color(51, 51, 51));
+        buttonC.setForeground(new java.awt.Color(255, 255, 255));
         buttonC.setText("JAWABAN 2");
         buttonC.setBorder(null);
         buttonC.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -231,7 +230,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
 
         buttonA.setBackground(new java.awt.Color(205, 102, 132));
         buttonA.setFont(new java.awt.Font("Source Sans Pro", 0, 14)); // NOI18N
-        buttonA.setForeground(new java.awt.Color(51, 51, 51));
+        buttonA.setForeground(new java.awt.Color(255, 255, 255));
         buttonA.setText("JAWABAN 1");
         buttonA.setBorder(null);
         buttonA.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -243,7 +242,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
 
         buttonB.setBackground(new java.awt.Color(205, 102, 132));
         buttonB.setFont(new java.awt.Font("Source Sans Pro", 0, 14)); // NOI18N
-        buttonB.setForeground(new java.awt.Color(51, 51, 51));
+        buttonB.setForeground(new java.awt.Color(255, 255, 255));
         buttonB.setText("JAWABAN 3");
         buttonB.setBorder(null);
         buttonB.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -255,7 +254,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
 
         buttonD.setBackground(new java.awt.Color(205, 102, 132));
         buttonD.setFont(new java.awt.Font("Source Sans Pro", 0, 14)); // NOI18N
-        buttonD.setForeground(new java.awt.Color(51, 51, 51));
+        buttonD.setForeground(new java.awt.Color(255, 255, 255));
         buttonD.setText("JAWABAN 4");
         buttonD.setBorder(null);
         buttonD.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -308,6 +307,20 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
             }
         });
         panelCustomBar.add(buttonClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 0, 40, 40));
+
+        jToggleButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/speaker.png"))); // NOI18N
+        jToggleButton1.setBorder(null);
+        jToggleButton1.setBorderPainted(false);
+        jToggleButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jToggleButton1.setOpaque(true);
+        jToggleButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/speaker-mute.png"))); // NOI18N
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+        panelCustomBar.add(jToggleButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 40, 40));
 
         getContentPane().add(panelCustomBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 820, 40));
 
@@ -364,13 +377,38 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMinimizedMouseClicked
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
+        PlayMusic play = new PlayMusic();
+        play.stopMusic();
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        if (jToggleButton1.isSelected()) {
+            new PlayMusic().stopMusic();
+        } else {
+            new PlayMusic().playMusic();
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
     
     private void hitungMundurAncestorAdded(javax.swing.event.AncestorEvent evt) {
-        hitungMundur.setValue(100);
+        // menghitung jumlah soal, kemudian membuat timer hitung mundur
+        // sesuai dengan jumlah soal
+        try {
+            s = conn.createStatement();
+            String query = "SELECT COUNT(*) AS soal FROM soal";
+            ResultSet r = s.executeQuery(query);
+            int totalSoal = 0;
+            while(r.next()){
+                totalSoal = r.getInt("soal");
+            }
+            counter = totalSoal;
+            counter *= 3;
+        } catch (SQLException e) {
+            System.out.println("Error!");
+        }
+        hitungMundur.setMaximum(counter); //set maximal value
+        hitungMundur.setValue(counter); //set value awal
         ActionListener listener = new ActionListener() {
-            int counter = 60;
             @Override
             public void actionPerformed(ActionEvent ae) {
                 counter--;
@@ -384,8 +422,9 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
                 }
             }
         };
-        timer = new Timer(100, listener);
-        timer.start();
+        //membuat timer dengan memanggil method listener setiap satu detik
+        timer = new Timer(1000, listener); 
+        timer.start(); // memulai timer
     }    
 
     /**
@@ -432,20 +471,15 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     private javax.swing.JLabel buttonMinimized;
     private javax.swing.JProgressBar hitungMundur;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel labelPlayer;
+    private javax.swing.JLabel labelSoal;
     private javax.swing.JPanel panelBase;
     private javax.swing.JPanel panelCustomBar;
     private javax.swing.JPanel panelInfo;
     private javax.swing.JPanel panelSoal;
     // End of variables declaration//GEN-END:variables
-
-    private void enableDrag(Component c) {
-        DragListener customBar = new DragListener();
-        c.addMouseListener(customBar);
-        c.addMouseMotionListener(customBar);
-    }
 }

@@ -11,29 +11,30 @@ import java.sql.Statement;
  * @author Rosyid Iz
  */
 public class FrameSelesai extends javax.swing.JFrame {
+    
+    Connection conn;
+    Statement s;
 
     /**
      * Creates new form FrameSelesai
      */
     public FrameSelesai() {
         initComponents();
-        enableDrag(this);
+        conn = ConnectDB.getKoneksi();
+        new EnableDrag(this);
         getScore();
     }
     
     private void getScore() {
+        // mengambil score user setelah selesai mengerjakan kuis
         try {
-            // Membuat Koneksi
-            Connection conn = ConnectDB.getKoneksi();
-            Statement s = conn.createStatement();
+            s = conn.createStatement();
             // Membuat Query SELECT
             String sql = "SELECT score FROM user ORDER BY id DESC LIMIT 1";
-            
             ResultSet r = s.executeQuery(sql);
             while(r.next()){
                 labelScore.setText(r.getString("score"));
             }
-
         } catch(SQLException e) {
             System.out.println("Terjadi Error! Gagal mengambil score");
         }
@@ -59,6 +60,7 @@ public class FrameSelesai extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         buttonRankList = new javax.swing.JLabel();
         labelScore = new javax.swing.JLabel();
+        jToggleButton1 = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 500));
@@ -112,12 +114,13 @@ public class FrameSelesai extends javax.swing.JFrame {
         buttonHomePage.setForeground(new java.awt.Color(240, 240, 240));
         buttonHomePage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         buttonHomePage.setText("< HOME PAGE");
+        buttonHomePage.setPreferredSize(new java.awt.Dimension(123, 23));
         buttonHomePage.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 buttonHomePageMouseClicked(evt);
             }
         });
-        jPanel3.add(buttonHomePage, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, 3, 340, 70));
+        jPanel3.add(buttonHomePage, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, 3, 350, 80));
 
         panelBase.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 350, 80));
 
@@ -149,6 +152,20 @@ public class FrameSelesai extends javax.swing.JFrame {
 
         jPanel1.add(panelBase, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 700, 400));
 
+        jToggleButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/speaker.png"))); // NOI18N
+        jToggleButton1.setBorder(null);
+        jToggleButton1.setBorderPainted(false);
+        jToggleButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jToggleButton1.setOpaque(true);
+        jToggleButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/speaker-mute.png"))); // NOI18N
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jToggleButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 40, 40));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 500));
 
         pack();
@@ -156,6 +173,8 @@ public class FrameSelesai extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void closePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closePanelMouseClicked
+        PlayMusic play = new PlayMusic();
+        play.stopMusic();
         this.dispose();
     }//GEN-LAST:event_closePanelMouseClicked
 
@@ -167,12 +186,23 @@ public class FrameSelesai extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonHomePageMouseClicked
 
     private void buttonRankListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonRankListMouseClicked
+        this.setVisible(false);
+        RankList rankList = new RankList();
         this.dispose();
+        rankList.setVisible(true);
     }//GEN-LAST:event_buttonRankListMouseClicked
 
     private void panelBaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBaseMouseClicked
 
     }//GEN-LAST:event_panelBaseMouseClicked
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        if (jToggleButton1.isSelected()) {
+            new PlayMusic().stopMusic();
+        } else {
+            new PlayMusic().playMusic();
+        }
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -219,14 +249,8 @@ public class FrameSelesai extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel labelScore;
     private javax.swing.JPanel panelBase;
     // End of variables declaration//GEN-END:variables
-
-    private void enableDrag(Component c) {
-        DragListener customBar = new DragListener();
-        c.addMouseListener(customBar);
-        c.addMouseMotionListener(customBar);
-    }
-    
 }

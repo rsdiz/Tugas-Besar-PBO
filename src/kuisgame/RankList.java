@@ -1,16 +1,12 @@
 package kuisgame;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
-import javax.sound.sampled.Mixer;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -19,49 +15,33 @@ import javax.swing.table.TableColumnModel;
  *
  * @author Rosyid Iz
  */
-public class FrameWelcome extends javax.swing.JFrame {
+public class RankList extends javax.swing.JFrame {
     
     Connection conn;
     Statement s;
     DefaultTableModel scoreModel;
     CustomHeaderScore customHeader = new CustomHeaderScore();
+    DefaultTableCellRenderer centerTxt = new DefaultTableCellRenderer();
 
     /**
-     * Creates new form FrameWelcome
+     * Creates new form RankList
      */
-    public FrameWelcome() {
+    public RankList() {
         initComponents();
-        conn = ConnectDB.getKoneksi(); // koneksi database
-        new EnableDrag(this); // halaman bisa di drag
-        scoreModel = (DefaultTableModel) tableScore.getModel(); //membuat table
+        conn = ConnectDB.getKoneksi();
+        new EnableDrag(this);
+        scoreModel = (DefaultTableModel) tableScore.getModel();
         tableScore.setModel(scoreModel);
         TableColumnModel tbl = tableScore.getColumnModel();
-        tbl.getColumn(0).setPreferredWidth(30); // mengatur ukuran kolom
+        tbl.getColumn(0).setPreferredWidth(30);
         tbl.getColumn(1).setPreferredWidth(190);
         tbl.getColumn(2).setPreferredWidth(80);
-        DefaultTableCellRenderer centerTxt = new DefaultTableCellRenderer();
-        centerTxt.setHorizontalAlignment(JLabel.CENTER); // setting rata tengah
-        tableScore.getColumnModel().getColumn(0).setCellRenderer(centerTxt); // kolom 0 rata tengah
+        centerTxt.setHorizontalAlignment(JLabel.CENTER);
+        tableScore.getColumnModel().getColumn(0).setCellRenderer(centerTxt);
         tableScore.getColumnModel().getColumn(2).setCellRenderer(centerTxt);
-        tableScore.getTableHeader().setBackground(Color.BLACK); // set kolom background header
-        tableScore.getTableHeader().setDefaultRenderer(customHeader); // menerapkan setting headaer
-        LoadData(); // menampilkan data dari database
-    }
-    
-    private void setNama(String nama) {
-        try {
-            s = conn.createStatement();
-            // Membuat Query SELECT
-            String sql = "INSERT INTO user VALUES (null,?,0)";
-//            s.executeQuery(sql);
-            PreparedStatement p = conn.prepareStatement(sql);
-            p.setString(1, nama);
-            p.executeUpdate();
-            p.close();
-            
-        } catch(SQLException e) {
-            System.out.println("Error: Nama tidak tersimpan!");
-        }
+        tableScore.getTableHeader().setBackground(Color.BLACK);
+        tableScore.getTableHeader().setDefaultRenderer(customHeader);
+        LoadData();
     }
 
     /**
@@ -74,30 +54,34 @@ public class FrameWelcome extends javax.swing.JFrame {
     private void initComponents() {
 
         panelBase = new javax.swing.JPanel();
-        panelLeftWelcome = new javax.swing.JPanel();
-        iconLoginAdmin = new javax.swing.JLabel();
-        labelTitleApp = new javax.swing.JLabel();
-        inputNama = new javax.swing.JTextField();
-        buttonMulai = new javax.swing.JButton();
         panelRightWelcome = new javax.swing.JPanel();
         labelTopScore = new javax.swing.JLabel();
         panelScore = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableScore = new javax.swing.JTable();
+        imgPiala = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        topUser1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        imgPiala1 = new javax.swing.JLabel();
+        topUser2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jSeparator3 = new javax.swing.JSeparator();
+        imgPiala2 = new javax.swing.JLabel();
+        topUser3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jSeparator4 = new javax.swing.JSeparator();
+        labelTopScore1 = new javax.swing.JLabel();
+        jSeparator5 = new javax.swing.JSeparator();
+        buttonBackHome = new javax.swing.JButton();
         panelCustomBar = new javax.swing.JPanel();
         buttonMinimized = new javax.swing.JLabel();
         buttonClose = new javax.swing.JLabel();
         jToggleButton1 = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Kuis Game");
-        setBackground(new java.awt.Color(25, 9, 52));
-        setFocusCycleRoot(false);
-        setForeground(new java.awt.Color(240, 240, 240));
-        setLocationByPlatform(true);
-        setMaximumSize(new java.awt.Dimension(800, 500));
-        setMinimumSize(new java.awt.Dimension(800, 500));
-        setName("frameWelcome"); // NOI18N
+        setMaximumSize(new java.awt.Dimension(820, 560));
         setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -110,58 +94,14 @@ public class FrameWelcome extends javax.swing.JFrame {
         });
         panelBase.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        panelLeftWelcome.setBackground(new java.awt.Color(111, 90, 126));
-        panelLeftWelcome.setFocusable(false);
-        panelLeftWelcome.setRequestFocusEnabled(false);
-        panelLeftWelcome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        iconLoginAdmin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        iconLoginAdmin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/user-3-very-small.png"))); // NOI18N
-        iconLoginAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                iconLoginAdminMouseClicked(evt);
-            }
-        });
-        panelLeftWelcome.add(iconLoginAdmin, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 50, 50));
-
-        labelTitleApp.setFont(new java.awt.Font("THE CHAMP", 0, 102)); // NOI18N
-        labelTitleApp.setForeground(new java.awt.Color(255, 174, 143));
-        labelTitleApp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labelTitleApp.setText("<html> <center>KUIS<br/> GAME</center> </html");
-        panelLeftWelcome.add(labelTitleApp, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 460, 310));
-
-        inputNama.setFont(new java.awt.Font("THE CHAMP", 0, 22)); // NOI18N
-        inputNama.setForeground(new java.awt.Color(255, 103, 125));
-        inputNama.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        inputNama.setText("MASUKKAN NAMA");
-        inputNama.setAutoscrolls(false);
-        inputNama.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 103, 125)));
-        inputNama.setCaretColor(new java.awt.Color(255, 174, 143));
-        inputNama.setFocusCycleRoot(true);
-        panelLeftWelcome.add(inputNama, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 310, 240, 50));
-
-        buttonMulai.setBackground(new java.awt.Color(255, 103, 125));
-        buttonMulai.setFont(new java.awt.Font("THE CHAMP", 0, 22)); // NOI18N
-        buttonMulai.setForeground(new java.awt.Color(255, 255, 255));
-        buttonMulai.setText("MULAI");
-        buttonMulai.setBorder(null);
-        buttonMulai.setBorderPainted(false);
-        buttonMulai.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonMulaiActionPerformed(evt);
-            }
-        });
-        panelLeftWelcome.add(buttonMulai, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 380, 240, 50));
-
-        panelBase.add(panelLeftWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 460, 500));
-
-        panelRightWelcome.setBackground(new java.awt.Color(252, 246, 246));
+        panelRightWelcome.setBackground(new java.awt.Color(111, 90, 126));
         panelRightWelcome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelTopScore.setFont(new java.awt.Font("THE CHAMP", 0, 34)); // NOI18N
-        labelTopScore.setForeground(new java.awt.Color(255, 103, 125));
-        labelTopScore.setText("TOP SCORE");
-        panelRightWelcome.add(labelTopScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 40, -1, -1));
+        labelTopScore.setForeground(new java.awt.Color(255, 174, 143));
+        labelTopScore.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelTopScore.setText("BEST PLAYER");
+        panelRightWelcome.add(labelTopScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 20, 420, -1));
 
         panelScore.setBackground(new java.awt.Color(51, 51, 51));
         panelScore.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -171,7 +111,6 @@ public class FrameWelcome extends javax.swing.JFrame {
         jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setFont(new java.awt.Font("THE CHAMP", 0, 12)); // NOI18N
 
         tableScore.setBackground(new java.awt.Color(51, 51, 51));
@@ -200,7 +139,7 @@ public class FrameWelcome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableScore.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tableScore.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         tableScore.setAutoscrolls(false);
         tableScore.setGridColor(new java.awt.Color(255, 103, 125));
         tableScore.setIntercellSpacing(new java.awt.Dimension(0, 0));
@@ -210,11 +149,77 @@ public class FrameWelcome extends javax.swing.JFrame {
         tableScore.setUpdateSelectionOnSort(false);
         jScrollPane1.setViewportView(tableScore);
 
-        panelScore.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 390));
+        panelScore.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 410));
 
-        panelRightWelcome.add(panelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 300, 390));
+        panelRightWelcome.add(panelScore, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 300, 410));
 
-        panelBase.add(panelRightWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 10, 340, 500));
+        imgPiala.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        imgPiala.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/piala-small.png"))); // NOI18N
+        panelRightWelcome.add(imgPiala, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 90, -1, -1));
+
+        jLabel1.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("TOP #1");
+        panelRightWelcome.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 100, 90, 30));
+
+        topUser1.setFont(new java.awt.Font("THE CHAMP Gradient", 0, 24)); // NOI18N
+        topUser1.setForeground(new java.awt.Color(255, 173, 173));
+        topUser1.setText("NAMA USER #1");
+        panelRightWelcome.add(topUser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 140, -1, -1));
+        panelRightWelcome.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 70, 420, 10));
+        panelRightWelcome.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 180, 420, 10));
+
+        imgPiala1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        imgPiala1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/piala-small.png"))); // NOI18N
+        panelRightWelcome.add(imgPiala1, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 200, -1, -1));
+
+        topUser2.setFont(new java.awt.Font("THE CHAMP Gradient", 0, 24)); // NOI18N
+        topUser2.setForeground(new java.awt.Color(255, 173, 173));
+        topUser2.setText("NAMA USER #2");
+        panelRightWelcome.add(topUser2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 250, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("TOP #2");
+        panelRightWelcome.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 210, 90, 30));
+        panelRightWelcome.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 420, 10));
+
+        imgPiala2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        imgPiala2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/kuisgame/piala-small.png"))); // NOI18N
+        panelRightWelcome.add(imgPiala2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 310, -1, -1));
+
+        topUser3.setFont(new java.awt.Font("THE CHAMP Gradient", 0, 24)); // NOI18N
+        topUser3.setForeground(new java.awt.Color(255, 173, 173));
+        topUser3.setText("NAMA USER #3");
+        panelRightWelcome.add(topUser3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 360, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("TOP #3");
+        panelRightWelcome.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 320, 90, 30));
+        panelRightWelcome.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 400, 420, 10));
+
+        labelTopScore1.setFont(new java.awt.Font("THE CHAMP", 0, 34)); // NOI18N
+        labelTopScore1.setForeground(new java.awt.Color(255, 174, 143));
+        labelTopScore1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelTopScore1.setText("SCORE");
+        panelRightWelcome.add(labelTopScore1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 300, -1));
+
+        jSeparator5.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        panelRightWelcome.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, 10, 470));
+
+        buttonBackHome.setBackground(new java.awt.Color(255, 103, 125));
+        buttonBackHome.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
+        buttonBackHome.setForeground(new java.awt.Color(255, 255, 255));
+        buttonBackHome.setText("BACK TO HOME");
+        buttonBackHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonBackHomeActionPerformed(evt);
+            }
+        });
+        panelRightWelcome.add(buttonBackHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 430, 260, 50));
+
+        panelBase.add(panelRightWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 800, 500));
 
         getContentPane().add(panelBase, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 820, 520));
 
@@ -263,20 +268,13 @@ public class FrameWelcome extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonMulaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMulaiActionPerformed
-        // ketika tombol di klik maka username akan disimpan ke database
-        // apabila bila field kosong maka akan muncul pop up
-        if (!inputNama.getText().equals("")) {
-            String nama = inputNama.getText();
-            setNama(nama);
-            this.setVisible(false);
-            new FrameMulaiKuis().setVisible(true);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(null, "Masukkan Nama!",
-                    "Error! Nama Kosong!", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_buttonMulaiActionPerformed
+    private void panelBaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBaseMouseClicked
+
+    }//GEN-LAST:event_panelBaseMouseClicked
+
+    private void buttonMinimizedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonMinimizedMouseClicked
+        this.setState(FrameWelcome.ICONIFIED);
+    }//GEN-LAST:event_buttonMinimizedMouseClicked
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
         PlayMusic play = new PlayMusic();
@@ -284,21 +282,12 @@ public class FrameWelcome extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
 
-    private void buttonMinimizedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonMinimizedMouseClicked
-        this.setState(FrameWelcome.ICONIFIED);
-    }//GEN-LAST:event_buttonMinimizedMouseClicked
-
-    private void panelBaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBaseMouseClicked
-        
-    }//GEN-LAST:event_panelBaseMouseClicked
-
-    private void iconLoginAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconLoginAdminMouseClicked
-        // pindah halaman ke login admin
+    private void buttonBackHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackHomeActionPerformed
         this.setVisible(false);
-        LoginAdmin login = new LoginAdmin();
+        FrameWelcome welcome = new FrameWelcome();
         this.dispose();
-        login.setVisible(true);
-    }//GEN-LAST:event_iconLoginAdminMouseClicked
+        welcome.setVisible(true);
+    }//GEN-LAST:event_buttonBackHomeActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
@@ -325,46 +314,60 @@ public class FrameWelcome extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameWelcome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RankList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameWelcome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RankList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameWelcome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RankList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameWelcome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RankList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrameWelcome().setVisible(true);
+                new RankList().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonBackHome;
     private javax.swing.JLabel buttonClose;
     private javax.swing.JLabel buttonMinimized;
-    private javax.swing.JButton buttonMulai;
-    private javax.swing.JLabel iconLoginAdmin;
-    private javax.swing.JTextField inputNama;
+    private javax.swing.JLabel imgPiala;
+    private javax.swing.JLabel imgPiala1;
+    private javax.swing.JLabel imgPiala2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JLabel labelTitleApp;
     private javax.swing.JLabel labelTopScore;
+    private javax.swing.JLabel labelTopScore1;
     private javax.swing.JPanel panelBase;
     private javax.swing.JPanel panelCustomBar;
-    private javax.swing.JPanel panelLeftWelcome;
     private javax.swing.JPanel panelRightWelcome;
     private javax.swing.JPanel panelScore;
     private javax.swing.JTable tableScore;
+    private javax.swing.JLabel topUser1;
+    private javax.swing.JLabel topUser2;
+    private javax.swing.JLabel topUser3;
     // End of variables declaration//GEN-END:variables
 
     private void LoadData() {
+        // Mengambil data dari tabel user, kemudian di tambahkan ke scoreModel
+        // Kemudian mengambil 3 nama dengan score tertinggi dari tabel user
+        // lalu, menset label menjadi nama-nama tersebut
         try {
             s = conn.createStatement();
-            String query = "SELECT * FROM user ORDER BY score DESC LIMIT 10";
+            String query = "SELECT * FROM user ORDER BY score DESC";
             ResultSet r = s.executeQuery(query);
             int i = 1;
             while(r.next()){
@@ -375,10 +378,21 @@ public class FrameWelcome extends javax.swing.JFrame {
                 i++;
                 scoreModel.addRow(obj);
             }
+            String [] topUser = new String[3];
+            query = "SELECT nama FROM user ORDER BY score DESC LIMIT 3";
+            r = s.executeQuery(query);
+            i = 0;
+            while(r.next()) {
+                topUser[i] = r.getString("nama");
+                i++;
+            }
+            // set text label menjadi nama user
+            topUser1.setText(topUser[0]);
+            topUser2.setText(topUser[1]);
+            topUser3.setText(topUser[2]);
         } catch (SQLException e) {
             System.out.println("Error: Tidak Bisa Mengambil Data Score!");
         }
     }
-    
     
 }
