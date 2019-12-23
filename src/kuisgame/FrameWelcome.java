@@ -6,9 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
-import javax.sound.sampled.Mixer;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -53,12 +50,10 @@ public class FrameWelcome extends javax.swing.JFrame {
             s = conn.createStatement();
             // Membuat Query SELECT
             String sql = "INSERT INTO user VALUES (null,?,0)";
-//            s.executeQuery(sql);
-            PreparedStatement p = conn.prepareStatement(sql);
-            p.setString(1, nama);
-            p.executeUpdate();
-            p.close();
-            
+            try (PreparedStatement p = conn.prepareStatement(sql)) {
+                p.setString(1, nama);
+                p.executeUpdate();
+            }
         } catch(SQLException e) {
             System.out.println("Error: Nama tidak tersimpan!");
         }
@@ -271,6 +266,7 @@ public class FrameWelcome extends javax.swing.JFrame {
             String nama = inputNama.getText();
             setNama(nama);
             this.setVisible(false);
+            PlayMusic.setBGM("src/bgm1.wav");
             new FrameMulaiKuis().setVisible(true);
             this.dispose();
         } else {
@@ -280,8 +276,7 @@ public class FrameWelcome extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMulaiActionPerformed
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
-        PlayMusic play = new PlayMusic();
-        play.stopMusic();
+        PlayMusic.stopMusic();
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
 
@@ -303,9 +298,9 @@ public class FrameWelcome extends javax.swing.JFrame {
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
-            new PlayMusic().stopMusic();
+            PlayMusic.stopMusic();
         } else {
-            new PlayMusic().playMusic();
+            PlayMusic.playMusic();
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
@@ -337,10 +332,8 @@ public class FrameWelcome extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameWelcome().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrameWelcome().setVisible(true);
         });
     }
 

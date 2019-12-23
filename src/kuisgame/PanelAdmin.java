@@ -5,7 +5,6 @@
  */
 package kuisgame;
 
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -25,9 +26,9 @@ import javax.swing.table.TableColumnModel;
  */
 public class PanelAdmin extends javax.swing.JFrame {
     
-    private Connection conn;
+    private final Connection conn;
     private Statement s;
-    private DefaultTableModel soalModel;
+    private final DefaultTableModel soalModel;
     
     String updateSoal = "";
     String updateKunci = "";
@@ -59,8 +60,9 @@ public class PanelAdmin extends javax.swing.JFrame {
         panelSoal.setVisible(false); // menyembunyikan panelSoal
     }
     
-    void clickKolom(){
+    final void clickKolom(){
         tableLihatSoal.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 JTable table =(JTable) mouseEvent.getSource();
                 Point point = mouseEvent.getPoint();
@@ -72,6 +74,7 @@ public class PanelAdmin extends javax.swing.JFrame {
                     buttonTambahSoal.setVisible(false);
                     buttonSubmitSoal.setVisible(false);
                     buttonEditSoal.setVisible(true);
+                    buttonHapusSoal.setVisible(true);
                     try {
                         s = conn.createStatement();
                         updateID = table.getSelectedRow() + 1;
@@ -142,6 +145,7 @@ public class PanelAdmin extends javax.swing.JFrame {
         buttonSoal = new javax.swing.JButton();
         panelSoal = new javax.swing.JPanel();
         labelTitleSoal = new javax.swing.JLabel();
+        buttonHapusSoal = new javax.swing.JButton();
         buttonEditSoal = new javax.swing.JButton();
         buttonSubmitSoal = new javax.swing.JButton();
         buttonTambahSoal = new javax.swing.JButton();
@@ -174,7 +178,6 @@ public class PanelAdmin extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(500, 540));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(500, 540));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -246,6 +249,19 @@ public class PanelAdmin extends javax.swing.JFrame {
         labelTitleSoal.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         panelSoal.add(labelTitleSoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 310, 60));
 
+        buttonHapusSoal.setBackground(new java.awt.Color(255, 37, 68));
+        buttonHapusSoal.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
+        buttonHapusSoal.setForeground(new java.awt.Color(255, 255, 255));
+        buttonHapusSoal.setText("HAPUS");
+        buttonHapusSoal.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        buttonHapusSoal.setBorderPainted(false);
+        buttonHapusSoal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonHapusSoalActionPerformed(evt);
+            }
+        });
+        panelSoal.add(buttonHapusSoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 130, 50));
+
         buttonEditSoal.setBackground(new java.awt.Color(255, 103, 125));
         buttonEditSoal.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
         buttonEditSoal.setForeground(new java.awt.Color(255, 255, 255));
@@ -257,7 +273,7 @@ public class PanelAdmin extends javax.swing.JFrame {
                 buttonEditSoalActionPerformed(evt);
             }
         });
-        panelSoal.add(buttonEditSoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 270, 50));
+        panelSoal.add(buttonEditSoal, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 140, 50));
 
         buttonSubmitSoal.setBackground(new java.awt.Color(255, 103, 125));
         buttonSubmitSoal.setFont(new java.awt.Font("THE CHAMP", 0, 24)); // NOI18N
@@ -459,8 +475,7 @@ public class PanelAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMinimizedMouseClicked
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
-        PlayMusic play = new PlayMusic();
-        play.stopMusic();
+        PlayMusic.stopMusic();
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
 
@@ -482,8 +497,8 @@ public class PanelAdmin extends javax.swing.JFrame {
         panelHomePage.setVisible(false);
         buttonEditSoal.setVisible(false);
         tableLihatSoal.setEnabled(true);
+        buttonHapusSoal.setVisible(false);
         LoadData();
-        
     }//GEN-LAST:event_buttonSoalActionPerformed
 
     private void buttonKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonKeluarActionPerformed
@@ -578,28 +593,50 @@ public class PanelAdmin extends javax.swing.JFrame {
                         +"     jawaban.jawaban_b = ? ,"
                         +"     jawaban.jawaban_c = ? ,"
                         +"     jawaban.jawaban_d = ? WHERE soal.id_soal =  ?;";
-            PreparedStatement p = conn.prepareStatement(sql);
-            p.setString(1, updateSoal);
-            p.setInt(2, updateK);
-            p.setString(3, updateJabawanA);
-            p.setString(4, updateJabawanB);
-            p.setString(5, updateJabawanC);
-            p.setString(6, updateJabawanD);
-            p.setInt(7, updateID);
-            p.executeUpdate();
-            p.close();
-        }catch(Exception e){
-            System.out.println("Error update");
+            try (PreparedStatement p = conn.prepareStatement(sql)) {
+                p.setString(1, updateSoal);
+                p.setInt(2, updateK);
+                p.setString(3, updateJabawanA);
+                p.setString(4, updateJabawanB);
+                p.setString(5, updateJabawanC);
+                p.setString(6, updateJabawanD);
+                p.setInt(7, updateID);
+                p.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Berhasil Mengedit Soal!", "SUKSES", JOptionPane.PLAIN_MESSAGE);
+                LoadData();
+                panelLihatSoal.setVisible(true);
+                buttonTambahSoal.setVisible(true);
+                buttonSubmitSoal.setVisible(false);
+                buttonEditSoal.setVisible(false);
+                panelTambahSoal.setVisible(false);
+                buttonHapusSoal.setVisible(false);
+            }
+        }catch(SQLException e){
+            System.out.println("Error update : " + e);
+            JOptionPane.showMessageDialog(this, "Gagal Mengedit Soal!", "GAGAL", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_buttonEditSoalActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
-            new PlayMusic().stopMusic();
+            PlayMusic.stopMusic();
         } else {
-            new PlayMusic().playMusic();
+            PlayMusic.playMusic();
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void buttonHapusSoalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonHapusSoalActionPerformed
+        try{
+            s = conn.createStatement();
+            String sql = "DELETE soal, jawaban FROM soal INNER JOIN jawaban ON soal.id_soal = jawaban.id_soal WHERE soal.id_soal = " + updateID;
+            s.executeUpdate(sql);
+            JOptionPane.showMessageDialog(this, "Berhasil Menghapus Soal!", "SUKSES", JOptionPane.CLOSED_OPTION);
+            System.out.println("Succes Delete table!");
+        } catch (SQLException ex) {
+            System.out.println("Error Delete : " + ex);
+            JOptionPane.showMessageDialog(this, "Gagal Menghapus Soal!", "GAGAL", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_buttonHapusSoalActionPerformed
 
     /**
      * @param args the command line arguments
@@ -629,10 +666,8 @@ public class PanelAdmin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PanelAdmin().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new PanelAdmin().setVisible(true);
         });
     }
 
@@ -640,6 +675,7 @@ public class PanelAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel buttonClose;
     private javax.swing.JButton buttonEditSoal;
     private javax.swing.ButtonGroup buttonGroupJawaban;
+    private javax.swing.JButton buttonHapusSoal;
     private javax.swing.JButton buttonHomePage;
     private javax.swing.JButton buttonKeluar;
     private javax.swing.JLabel buttonMinimized;

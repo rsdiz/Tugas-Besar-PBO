@@ -277,13 +277,13 @@ public class RankList extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMinimizedMouseClicked
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
-        PlayMusic play = new PlayMusic();
-        play.stopMusic();
+        PlayMusic.stopMusic();
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
 
     private void buttonBackHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonBackHomeActionPerformed
         this.setVisible(false);
+        PlayMusic.setBGM("src/tetris.wav");
         FrameWelcome welcome = new FrameWelcome();
         this.dispose();
         welcome.setVisible(true);
@@ -291,9 +291,9 @@ public class RankList extends javax.swing.JFrame {
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
-            new PlayMusic().stopMusic();
+            PlayMusic.stopMusic();
         } else {
-            new PlayMusic().playMusic();
+            PlayMusic.playMusic();
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 

@@ -1,6 +1,5 @@
 package kuisgame;
 
-import java.awt.Component;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -173,13 +172,13 @@ public class FrameSelesai extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void closePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closePanelMouseClicked
-        PlayMusic play = new PlayMusic();
-        play.stopMusic();
+        PlayMusic.stopMusic();
         this.dispose();
     }//GEN-LAST:event_closePanelMouseClicked
 
     private void buttonHomePageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonHomePageMouseClicked
         this.setVisible(false);
+        PlayMusic.setBGM("src/tetris.wav");
         FrameWelcome welcome = new FrameWelcome();
         this.dispose();
         welcome.setVisible(true);
@@ -198,9 +197,9 @@ public class FrameSelesai extends javax.swing.JFrame {
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
-            new PlayMusic().stopMusic();
+            PlayMusic.stopMusic();
         } else {
-            new PlayMusic().playMusic();
+            PlayMusic.playMusic();
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
@@ -232,10 +231,8 @@ public class FrameSelesai extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameSelesai().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrameSelesai().setVisible(true);
         });
     }
 

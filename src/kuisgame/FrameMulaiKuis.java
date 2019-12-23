@@ -1,6 +1,6 @@
 package kuisgame;
 
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -20,7 +21,7 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     Statement s;
     String soal, player;
     String A, B, C, D;
-    private int urutan = 1;
+    private int urutan = 1, total = 0;
     String jawaban;
     int score = 0;
     
@@ -377,16 +378,15 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMinimizedMouseClicked
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
-        PlayMusic play = new PlayMusic();
-        play.stopMusic();
+        PlayMusic.stopMusic();
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
-            new PlayMusic().stopMusic();
+            PlayMusic.stopMusic();
         } else {
-            new PlayMusic().playMusic();
+            PlayMusic.playMusic();
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
     
@@ -403,23 +403,23 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
             }
             counter = totalSoal;
             counter *= 3;
+            total = counter;
         } catch (SQLException e) {
             System.out.println("Error!");
         }
         hitungMundur.setMaximum(counter); //set maximal value
         hitungMundur.setValue(counter); //set value awal
-        ActionListener listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                counter--;
-                hitungMundur.setValue(counter);
-                if (urutan > getBatas()) {
-                    timer.stop();
-                } else if (counter < 1) {
-                    timer.stop();
-                    urutan = getBatas() + 1;
-                    toEnd();
-                }
+        ActionListener listener = (ActionEvent ae) -> {
+            if (counter < (total*0.25)) hitungMundur.setForeground(Color.red);
+            counter--;
+            hitungMundur.setValue(counter);
+            if (urutan > getBatas()) {
+                timer.stop();
+            } else if (counter < 1) {
+                timer.stop();
+                urutan = getBatas() + 1;
+                JOptionPane.showMessageDialog(this, "Waktu Habis", "TIMEOUT", JOptionPane.ERROR_MESSAGE);
+                toEnd();
             }
         };
         //membuat timer dengan memanggil method listener setiap satu detik
@@ -455,10 +455,8 @@ public final class FrameMulaiKuis extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameMulaiKuis().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrameMulaiKuis().setVisible(true);
         });
     }
     private Timer timer;

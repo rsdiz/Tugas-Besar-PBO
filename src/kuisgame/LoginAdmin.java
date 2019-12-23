@@ -5,9 +5,10 @@
  */
 package kuisgame;
 
-import java.awt.Component;
+import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
@@ -26,12 +27,12 @@ public class LoginAdmin extends javax.swing.JFrame {
      */
     public LoginAdmin() {
         initComponents();
-        conn = new ConnectDB().getKoneksi();
+        conn = ConnectDB.getKoneksi();
         new EnableDrag(this);
     }
     
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     /**
@@ -171,8 +172,7 @@ public class LoginAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMinimizedMouseClicked
 
     private void buttonCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCloseMouseClicked
-        PlayMusic play = new PlayMusic();
-        play.stopMusic();
+        PlayMusic.stopMusic();
         this.dispose();
     }//GEN-LAST:event_buttonCloseMouseClicked
 
@@ -214,16 +214,16 @@ public class LoginAdmin extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Username atau Password salah!",
                                                 "LOGIN", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception e) {
+        } catch (HeadlessException | SQLException e) {
             System.out.println("Error: " + e);
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
-            new PlayMusic().stopMusic();
+            PlayMusic.stopMusic();
         } else {
-            new PlayMusic().playMusic();
+            PlayMusic.playMusic();
         }
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
@@ -255,10 +255,8 @@ public class LoginAdmin extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LoginAdmin().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new LoginAdmin().setVisible(true);
         });
     }
 

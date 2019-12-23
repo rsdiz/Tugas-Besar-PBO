@@ -15,15 +15,26 @@ import static kuisgame.PlayMusic.music;
 import sun.audio.AudioData;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
-import sun.audio.ContinuousAudioDataStream;
 
 /**
  *
  * @author Rosyid Iz
  */
 public class PlayMusic {
-    private AL app ;
+    private final AL app ;
     private static AudioStream BGM = null;
+    
+    public static void setBGM(String path){
+        stopMusic();
+        
+        try {
+            BGM = new AudioStream(new FileInputStream(path));
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex);
+        }
+        
+        playMusic();
+    }
 
     public PlayMusic() {
         app = new AL();
@@ -38,7 +49,7 @@ public class PlayMusic {
         AudioData MD;
         
         try {
-            BGM = new AudioStream(new FileInputStream("src/bgm.wav"));
+            BGM = new AudioStream(new FileInputStream("src/tetris.wav"));
             AudioPlayer.player.start(BGM);
 //            if(!AudioPlayer.player.isAlive()){
                 AudioPlayer.player.start(BGM);
@@ -59,9 +70,7 @@ public class PlayMusic {
 }
 
 class AL implements ActionListener {
-        
-        private JButton enterButton;
-        
+        private final JButton enterButton;
         AL() {
             enterButton = new JButton("Enter");
             enterButton.addActionListener(this);
